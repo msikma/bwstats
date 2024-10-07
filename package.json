@@ -12,6 +12,9 @@
   "bin": {
     "bwstats.js": "./bin/bwstats.js"
   },
+  "publishConfig": {
+    "access": "public"
+  },
   "license": "MIT",
   "description": "StarCraft: Brood War statistics",
   "dependencies": {
