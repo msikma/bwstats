@@ -1,6 +1,5 @@
 {
   "name": "@dada78641/bwstats",
-  "private": true,
   "type": "module",
   "version": "1.0.0",
   "main": "index.js",
