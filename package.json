@@ -1,5 +1,6 @@
 {
   "name": "@dada78641/bwstats",
+  "description": "Fetches various StarCraft statistics",
   "type": "module",
   "version": "1.0.0",
   "main": "index.js",
@@ -23,7 +24,6 @@
     "access": "public"
   },
   "license": "MIT",
-  "description": "StarCraft: Brood War statistics",
   "dependencies": {
     "@dada78641/bwtoolsdata": "^1.1.0",
     "@sindresorhus/slugify": "^2.2.1",
