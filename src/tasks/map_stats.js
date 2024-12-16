@@ -24,6 +24,9 @@ const sagiNames = {
  */
 function getTranslatedMapName(nameKor, srcL, dstL) {
   const foundMap = maps.find(map => map[srcL] === nameKor)
+  if (!foundMap) {
+    return null
+  }
   return foundMap[dstL]
 }
 
