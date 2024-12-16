@@ -2,7 +2,7 @@
   "name": "@dada78641/bwstats",
   "description": "Fetches various StarCraft statistics",
   "type": "module",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -26,6 +26,7 @@
   "license": "MIT",
   "dependencies": {
     "@dada78641/bwtoolsdata": "^1.1.0",
+    "@dada78641/bwmapnames": "^1.0.0",
     "@sindresorhus/slugify": "^2.2.1",
     "argparse": "^2.0.1",
     "cheerio": "^1.0.0",

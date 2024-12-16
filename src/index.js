@@ -1,12 +1,14 @@
 // @dada78641/bwstats, (c) 2024. MIT license.
 
-import {getMapStatsData, getUpdatedMapCsv} from './tasks/map_stats.js'
+import {getMapStatsData, getMapNamesData} from './tasks/map_stats.js'
 
 /**
- * Returns a map names .csv file with new maps from EloBoard added in.
+ * Returns map names in English and Korean.
+ * 
+ * Will include new maps if they show up on EloBoard.
  */
-export function getMapNamesCsv() {
-  return getUpdatedMapCsv()
+export async function getMapNames(refresh = false) {
+  return getMapNamesData(refresh)
 }
 
 /**
@@ -14,6 +16,6 @@ export function getMapNamesCsv() {
  * 
  * If magAgeMs is set, the data is ensured to be fresh if the cache is older.
  */
-export async function getMapStats(maxAgeMs = undefined) {
-  return getMapStatsData(maxAgeMs)
+export async function getMapStats(maxAgeMs = undefined, useCache = true) {
+  return getMapStatsData(maxAgeMs, useCache)
 }

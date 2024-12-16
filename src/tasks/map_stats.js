@@ -2,7 +2,7 @@
 
 import orderBy from 'lodash.orderby'
 import * as cheerio from 'cheerio'
-import {ensureMapData, getMapNamesCSV, getTranslatedMapName} from '@dada78641/bwtoolsdata'
+import {maps} from '@dada78641/bwmapnames'
 import {readCache, writeCache} from '../util/cache.js'
 import {fetchPage} from '../util/fetch.js'
 
@@ -17,6 +17,14 @@ const sagiNames = {
   T: 'Tesagi',
   P: 'Pusagi',
   Z: 'Zesagi',
+}
+
+/**
+ * Returns a translated map name.
+ */
+function getTranslatedMapName(nameKor, srcL, dstL) {
+  const foundMap = maps.find(map => map[srcL] === nameKor)
+  return foundMap[dstL]
 }
 
 /**
@@ -243,33 +251,24 @@ function extractData($, res) {
  * 
  * If there are no new maps, this function will return null.
  */
-export async function getUpdatedMapCsv() {
-  const data = await getMapStatsData()
+export async function getMapNamesData(refresh = false) {
+  const data = await getMapStatsData(undefined, !refresh)
 
-  // List the number of unknown maps we've found. If it's none, nothing needs to be done.
+  // List the number of unknown maps we've found. Usually an empty array.
   const unknownMaps = data.maps.filter(map => map.isUnknownMap)
-  if (unknownMaps.length === 0) {
-    return null
+  const newData = {
+    lastUpdated: new Date().toISOString(),
+    maps: [...maps, ...unknownMaps.map(map => ({eng: null, kor: map.name}))].sort(),
   }
 
-  // Get the current CSV data and add the unknown map to it.
-  const currentData = await getMapNamesCSV()
-  let lineNumber = currentData.split('\n').length
-  const newEntries = []
-  for (const map of unknownMaps) {
-    newEntries.push(`"PLACEHOLDER_${lineNumber}","${map.name}"`)
-  }
-
-  // Return the new CSV file as a string.
-  return [currentData.trim(), newEntries.join('\n')].join('\n')
+  return newData
 }
 
 /**
  * Actually retrieves the EloBoard map stats, if no cache is available.
  */
-async function _getMapStatsData(maxAgeMs = undefined) {
-  await ensureMapData()
-  const res = await fetchPage(URL_MAP_STATS, true, maxAgeMs)
+async function _getMapStatsData(maxAgeMs = undefined, useCache = true) {
+  const res = await fetchPage(URL_MAP_STATS, useCache, maxAgeMs)
   const $ = cheerio.load(res.text)
   const data = extractData($, res)
   return data
@@ -282,15 +281,15 @@ async function _getMapStatsData(maxAgeMs = undefined) {
  * maxAgeMs is used to determine if cache should be used, or if a fresh copy should be fetched.
  * If it's set to undefined, the default cache duration is used.
  */
-export async function getMapStatsData(maxAgeMs = undefined) {
+export async function getMapStatsData(maxAgeMs = undefined, useCache = true) {
   // Attempt to load the generated map stats data from cache.
   const cachedData = await readCache('MapStatsData')
-  if (cachedData) {
+  if (cachedData && useCache) {
     return cachedData.data
   }
 
   // Fetch fresh data, write it to cache, and return it.
-  const data = await _getMapStatsData(maxAgeMs)
+  const data = await _getMapStatsData(maxAgeMs, useCache)
   await writeCache('MapStatsData', {data})
   return data
 }
